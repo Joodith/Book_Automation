@@ -1,0 +1,22 @@
+{% extends 'basepage.html' %}
+{% load bootstrap3 %}
+{% load crispy_forms_tags %}
+{% block body_block %}
+<form method="POST">
+    {% csrf_token %}
+    {% for message in messages %}
+
+                    <div class="alert alert-warning">
+                        <a class="close" href="{% url 'Account:login' %}" data-dismiss="alert">×</a>
+
+                        {{ message }}
+
+                    </div>
+            {% endfor %}
+    {% bootstrap_form manager_form %}
+    {% bootstrap_form user_form %}
+    <input type="submit" value="Register">
+
+</form>
+
+{% endblock %}
