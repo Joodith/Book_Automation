@@ -1,0 +1,164 @@
+{% extends 'Customer/customer_home.html' %}
+{% block form_block %}
+{% endblock %}
+{% block body_block %}
+{% ifequal length 0 %}
+<h1 align="center" >No items added to cart !</h1>
+{% else %}
+<div style="margin-left:900px" >
+
+    <table id="table" style="width:400px">
+        <tr>
+            <th>Title</th>
+            <th >Quantity</th>
+            <th>Price</th>
+        </tr>
+{% for item in cartlist %}
+{% if item.cart %}
+<tr>
+    <td>{{item.product.title}}</td>
+    <td  id="table_data{{item.product.pk}}" align="center">{{item.quantity}}</td>
+    <td id="table_data_price{{item.product.pk}}">{% widthratio item.product.price 1 item.quantity %}</td>
+</tr>
+{% endif %}
+{% endfor %}
+<tr>
+    <td style="font-size:20px;border:1px" align="center" id="total_sum">TOTAL: Rs.{{sum_of_prices}}</td>
+</tr>
+        </table>
+
+<a style="margin-left:40px;width:200px" class="btn btn-primary" href="{% url 'Customer:address_add' %}">Place order</a>
+</div>
+{% endifequal %}
+
+<div class="row">
+    <div class="container">
+    <div class="col">
+{% for j in cartlist %}
+{% if j.cart %}
+<dialog id="show_up">Book has been added to wishlist!</dialog>
+    <div id="card{{j.product.pk}}" class="card" style="width:500px">
+
+    <a href="{{ j.product.book_pic.url }}">
+                  <img
+                    src="{{ j.product.book_pic.url }}"
+                    class="rounded-circle"
+                    width="180px"
+                    height="200px"
+                    style="margin-top:20px"
+                  />
+                </a>
+    <div id="price{{j.product.pk}}" style="margin-left:460px;margin-top:0px;font-size:20px;font-style:bold">
+            Rs.{% widthratio j.product.price 1 j.quantity %}
+        </div>
+        <div class="card-body">
+      <h4 class="card-title" style="font-size:20px">{{j.product.title}}</h4>
+     <p class="card-text" style="font-size:15px"><strong>{{j.product.author}}</strong></p>
+     <p class="card-text">
+      <strong>Publications: </strong>{{j.product.publications}}
+
+      </p>
+            <label for="quantity">Number of books:</label>
+        <select name="quantity" id="quantity" class="qua" onchange="change_number({{j.product}})">
+{% for k in numbers %}
+{% ifequal k j.quantity %}
+            <option id="{{j.product.pk}}" name={{j.product.pk}} selected>{{k}}</option>
+            {% else %}
+            <option id="value{{j.product.pk}}" name={{j.product.pk}}>{{k}}</option>
+            {% endifequal %}
+            {% endfor %}
+        </select>
+
+    </div>
+    <div class="card-footer">
+        <button onclick="remove_from_cart({{j.product.pk}})" style="width:300px;font-size:15px" class="btn btn-default">
+            Remove</button>
+
+        <button onclick="move_wishlist({{j.product.pk}})" style="width:300px;font-size:15px" class="btn btn-default">
+            Move to wishlist</button>
+
+
+
+        </div>
+    </div>
+
+{% endif %}
+
+ {% endfor %}
+        </div>
+        </div>
+    </div>
+
+<script>
+    function move_wishlist(pk_val){
+    var div_elem=$("#card"+pk_val);
+    var diag=$("#show_up");
+    $.ajax({
+        type:'GET',
+        url:"{% url 'Customer:cart_change' %}",
+        data:{
+        pk:pk_val,
+        job:"move_wishlist",
+        },
+        success:function(data){
+        div_elem.html("");
+        diag.show();
+        }
+        });
+    }
+    function remove_from_cart(pk_val){
+     var div_elem=$("#card"+pk_val);
+    $.ajax({
+        type:'GET',
+        url:"{% url 'Customer:cart_change' %}",
+        data:{
+        pk:pk_val,
+        job:"remove",
+        },
+        success:function(data){
+        div_elem.html("");
+        alert("Book has been removed from cart");
+        }
+        });
+    }
+
+    $(document).ready(function(){
+    $("select.qua").change(function(){
+    var price;
+    var sum=0;
+    var table=$("#table");
+        var selectedVal= $(this).children("option:selected").val();
+        var selectedProdId=$(this).children("option:selected").attr("name");
+
+         $.ajax({
+        type:'GET',
+        url:"{% url 'Customer:change_quantity' %}",
+        data:{
+        pk:parseInt(selectedProdId),
+        no:parseFloat(selectedVal),
+        },
+        success:function(data){
+        $("#price"+parseInt(selectedProdId)).html(data.amount);
+        $("#table_data"+parseInt(selectedProdId)).html(parseFloat(selectedVal));
+
+        $("#table_data_price"+parseInt(selectedProdId)).html(data.amount);
+        table.find('tr').each(function (i, el) {
+        var $tds = $(this).find('td'),
+            price= $tds.eq(2).text();
+            if(price!==""){
+            console.log(price);
+            sum+=parseInt(price);
+            }
+
+    });
+
+    $("#total_sum").html("TOTAL:  Rs."+sum.toString());
+
+        }
+        });
+    });
+});
+
+
+</script>
+{% endblock %}

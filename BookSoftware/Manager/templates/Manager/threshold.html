@@ -1,0 +1,39 @@
+{% extends 'Manager/manager_home.html' %}
+{% block body_block %}
+<h2 align="center">Current threshold set to 30%</h2>
+{% ifequal length 0 %}
+<h4 align="center" style="margin-top:100px;color:green"><strong>All books are above threshold value!</strong></h4>
+{% endifequal %}
+{% for j in books_list %}
+
+<div class="row" style="margin-left:350px;border:1px solid;width:900px;height:250px">
+    <div class="col-md-4" >
+        <a href="{{ j.book_pic.url }}">
+                  <img
+                    src="{{ j.book_pic.url }}"
+                    class="rounded-circle"
+                    width="180px"
+                    height="200px"
+                    style="margin-top:20px"
+                  />
+                </a>
+    </div>
+        <div class="col-md-4">
+
+      <h4  style="font-size:30px">{{j.title}}</h4>
+     <p style="font-size:20px"><strong>Author: </strong>{{j.author}}</p>
+     <p>
+      <strong>Publications: </strong>{{j.publications}}
+      <br>
+      <strong>Price: </strong>Rs.{{j.price}}
+         <br>
+         <strong>No of copies: </strong>{{j.no_of_copies}}
+     </p>
+    </div>
+
+</div>
+<br>
+
+
+{% endfor %}
+{% endblock %}

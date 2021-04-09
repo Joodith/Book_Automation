@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h2>Your invoice details have been sent!</h2>
+ <table id="table" style="width:400px">
+        <tr>
+            <th>Title</th>
+            <th >Quantity</th>
+            <th>Price</th>
+        </tr>
+{% for item in final_prod %}
+{% if item.cart %}
+<tr>
+    <td>{{item.product.title}}</td>
+    <td  id="table_data{{item.product.pk}}" align="center">{{item.quantity}}</td>
+    <td id="table_data_price{{item.product.pk}}">{% widthratio item.product.price 1 item.quantity %}</td>
+</tr>
+{% endif %}
+{% endfor %}
+<tr>
+    <td style="font-size:20px;border:1px" align="center" id="total_sum">TOTAL: Rs.{{total_price}}</td>
+</tr>
+        </table>
+
+</body>
+</html>

@@ -1,0 +1,14 @@
+{% extends 'Manager/manager_home.html' %}
+{% load static %}
+{% block body_block %}
+<h2 style="margin-left:350px"><b>SUGGESTIONS LIST</b></h2>
+{% for i in sug_list %}
+ <div class="list-group" style="width:620px;margin-left:350px">
+        <div  class="list-group-item" >
+            <h5 class="list-group-item-text"><strong>Book Title: </strong>{{i.book}}</h5>
+            <h5 class="list-group-item-text"><strong>Author Name: </strong>{{i.author_name}}</h5>
+            <h5 class="list-group-item-text"><strong>Total suggestions for the book: </strong>{{i.people_count}}</h5>
+        </div>
+ </div>
+{% endfor %}
+{% endblock %}

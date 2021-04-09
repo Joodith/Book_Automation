@@ -1,0 +1,41 @@
+{% extends 'Employee/emp_home.html' %}
+{% load crispy_forms_tags %}
+{% load bootstrap3 %}
+{% load static %}
+{% block body_block %}
+
+{% for book in books %}
+<div class="card">
+    <div class="card-body">
+        <div class="row" style="margin-left:350px;border:1px solid;width:900px;height:250px;margin-top:20px">
+    <div class="col-md-4" >
+        <a href="{{ book.book_pic.url }}">
+                  <img
+                    src="{{ book.book_pic.url }}"
+                    class="rounded-circle"
+                    width="180px"
+                    height="200px"
+                    style="margin-top:20px"
+                  />
+                </a>
+    </div>
+        <div class="col-md-4">
+
+      <h4  style="font-size:30px">{{book.title}}</h4>
+     <p style="font-size:20px"><strong>Author: </strong>{{book.author}}</p>
+     <p>
+      <strong>Publications: </strong>{{book.publications}}
+      <br>
+      <strong>Price: </strong>Rs.{{book.price}}
+         <br>
+         <strong>No of copies: </strong>{{book.no_of_copies}}
+     </p>
+    </div>
+
+
+
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}

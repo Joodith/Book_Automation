@@ -1,0 +1,30 @@
+{% extends 'Customer/customer_home.html' %}
+{% load static %}
+{% block form_block %}
+{% endblock %}
+{% block body_block %}
+<form style="margin-left:400px" method="post" id="post_form">
+    {% csrf_token %}
+    <p>
+    <label for="book_name">Book Name</label>
+    <input style="margin-left:30px;width:400px" name="book_name"  id="book_name" type="text">
+</p>
+    <label for="author">Author</label>
+    <input style="margin-left:60px;width:400px" name="author"  id="author" type="text">
+    <p>
+    <button type="submit"  class="btn btn-primary" style="width:300px;margin-top:40px;margin-left:130px">Suggest</button>
+    </p>
+
+</form>
+
+{% for message in messages %}
+
+                    <div class="alert alert-danger">
+                        <a class="close" href="#" data-dismiss="alert">×</a>
+
+                        {{ message }}
+
+                    </div>
+            {% endfor %}
+
+{% endblock %}

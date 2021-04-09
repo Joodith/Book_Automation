@@ -1,0 +1,15 @@
+{% extends 'Manager/manager_home.html' %}
+{% block body_block %}
+<h2 style="margin-left:350px"><b>BILLS LIST</b></h2>
+{% for i in bills %}
+ <div class="list-group" style="width:620px;margin-left:350px">
+        <div  class="list-group-item" >
+            <strong>Customer:</strong>{{i.user.customer.fullname}}
+            <strong style="margin-left:30px">Contact number:</strong>{{i.user.customer.phone_no}}
+            <h5 class="list-group-item-text"><strong>Order date:</strong>{{i.date}}</h5>
+            <h5 class="list-group-item-text"><strong>Bill Amount:</strong>{{i.bill_amount}}</h5>
+
+        </div>
+ </div>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,8 @@
+{% extends 'Customer/customer_home.html' %}
+{% load static %}
+{% block form_block %}
+{% endblock %}
+{% block body_block %}
+<dialog>A new suggestion has been made!</dialog>
+<a href="{% url 'Customer:customer_home' %}" class="btn btn-primary">Back to home</a>
+{% endblock %}

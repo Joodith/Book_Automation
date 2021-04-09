@@ -1,0 +1,83 @@
+{% extends 'Customer/customer_home.html' %}
+{% block form_block %}
+{% endblock %}
+{% block body_block %}
+{% ifequal length 0 %}
+<h1 align="center" >No items in wishlist!</h1>
+{% endifequal %}
+{% for j in wishlist %}
+{% if j.wishlist %}
+<dialog id="show_up">Book has been added to cart!</dialog>
+    <div id="card{{j.product.pk}}" class="card" style="width:500px">
+ <a href="{{ j.product.book_pic.url }}">
+                  <img
+                    src="{{ j.product.book_pic.url }}"
+                    class="rounded-circle"
+                    width="180px"
+                    height="200px"
+                    style="margin-top:20px"
+                  />
+                </a>
+
+    <div class="card-body">
+      <h4 class="card-title" style="font-size:30px">{{j.product.title}}</h4>
+     <p class="card-text" style="font-size:20px"><strong>{{j.product.author}}</strong></p>
+     <p class="card-text">
+      <strong>Publications: </strong>{{j.product.publications}}
+      <br>
+      <strong>Date of publish: </strong>{{j.product.year}}
+      <br>
+      <strong>Edition: </strong>{{j.product.edition}}
+      <br>
+      <strong>Price: </strong>Rs.{{j.product.price}}
+     </p>
+    </div>
+    <div class="card-footer">
+
+        <button  onclick="deleteWish({{j.product.pk}})" style="width:400px;font-size:15px" class="btn btn-default btn-lg">
+            Move to cart</button>
+
+        <button onclick="removeWish({{j.product.pk}})" style="width:400px;font-size:15px" class="btn btn-default btn-lg">
+            Remove from wishlist</button>
+
+        </div>
+    </div>
+
+{% endif %}
+
+ {% endfor %}
+<script>
+    function deleteWish(pk_val){
+    var div_elem=$("#card"+pk_val);
+    var diag=$("#show_up");
+    $.ajax({
+        type:'GET',
+        url:"{% url 'Customer:delete_wishlist' %}",
+        data:{
+        pk:pk_val,
+        job:"move_cart",
+        },
+        success:function(data){
+        div_elem.html("");
+        diag.show();
+        }
+        });
+    }
+    function removeWish(pk_val){
+     var div_elem=$("#card"+pk_val);
+    $.ajax({
+        type:'GET',
+        url:"{% url 'Customer:delete_wishlist' %}",
+        data:{
+        pk:pk_val,
+        job:"remove",
+        },
+        success:function(data){
+        div_elem.html("");
+        }
+        });
+    }
+
+</script>
+
+{% endblock %}

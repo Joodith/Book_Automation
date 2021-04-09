@@ -1,0 +1,98 @@
+{% extends 'Manager/manager_home.html' %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% block body_block %}
+<div style="margin-left:1250px">
+    <label for="categ" style="font-size:25px">Choose book category</label>
+
+<select name="category_select" id="categ" class="ctg" style="margin-left:60px;width:140px;height:25px" >
+    <option>All categories</option>
+    {% for i in categ_list %}
+    {% ifnotequal ctg "" %}
+    {% ifequal ctg i %}
+    <option name="{{i}}" selected>{{i}}</option>
+    {% else %}
+    <option name="{{i}}">{{i}}</option>
+    {% endifequal %}
+
+    {% else %}
+     <option name="{{i}}">{{i}}</option>
+    {% endifnotequal %}
+    {% endfor %}
+</select>
+
+    </div>
+{{ json_li|json_script:"hello-data" }}
+<div id="div_elem">
+
+{% ifequal length 0 %}
+    <h2 align="center">No books found!</h2>
+    {% endifequal %}
+
+{% for j in json_li %}
+
+<div class="row" style="margin-left:350px;border:1px solid;width:900px;height:250px">
+    <div class="col-md-4" >
+        <a href="/media/book_pictures/{{ j.fields.book_pic }}">
+                  <img
+                    src="/media/{{ j.fields.book_pic }}"
+                    class="rounded-circle"
+                    width="180px"
+                    height="200px"
+                    style="margin-top:20px"
+                  />
+                </a>
+    </div>
+        <div class="col-md-4">
+
+      <h4  style="font-size:30px">{{j.fields.title}}</h4>
+     <p style="font-size:20px"><strong>Author: </strong>{{j.fields.author}}</p>
+     <p>
+      <strong>Publications: </strong>{{j.fields.publications}}
+      <br>
+      <strong>Price: </strong>Rs.{{j.fields.price}}
+         <br>
+         <strong>No of copies: </strong>{{j.fields.no_of_copies}}
+     </p>
+    </div>
+<div class="col-md-4" style="margin-top:80px">
+       <a href="{% url 'Manager:update_book' pk=j.pk %}" style="width:120px" class="btn btn-primary">Update</a>
+<a href="{% url 'Manager:delete_book' pk=j.pk %}" style="width:120px" class="btn btn-primary">Delete</a>
+    </div>
+
+    </div>
+
+
+<br>
+
+{% endfor %}
+    </div>
+<script>
+console.log(JSON.parse(document.getElementById('hello-data').textContent));
+     $(document).ready(function(){
+    $("#categ").change(function(){
+    var categ=$(this).children("option:selected").val();
+    var c=$(this).children("option:selected");
+    var url1="/manager/categorywise_list/"+categ;
+    var value = JSON.parse(document.getElementById('hello-data').textContent);
+    console.log(value);
+
+$.ajax({
+    type:'GET',
+    url:url1,
+    data:{
+    categ:categ,
+    },
+    success:function(data){
+
+    window.location=url1;
+
+    }
+    });
+
+    });
+
+    });
+
+</script>
+{% endblock %}

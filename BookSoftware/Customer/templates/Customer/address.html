@@ -1,0 +1,48 @@
+{% extends 'Customer/customer_home.html' %}
+{% block form_block %}
+{% endblock %}
+{% block body_block %}
+<form method="post">
+    {% csrf_token %}
+    <h2>Contact Details</h2>
+    <p>
+    <label for="name">Contact name: </label>
+    <input name="name" id="name" type="text">
+</p>
+    <p>
+    <label for="phone_no">Phone Number: </label>
+    <input name="phone_no" id="phone_no" type="text">
+</p>
+     <p>
+    <label for="email">Email: </label>
+    <input name="email" id="email" type="text">
+</p>
+     <h2>Address Details</h2>
+<p>
+    <label for="pincode">Pincode: </label>
+    <input name="pincode" id="pincode" type="text">
+</p>
+
+    <p>
+    <label for="addrs">Address(house number,street,area): </label>
+    <input name="addrs" id="addrs" type="text">
+</p>
+    <p>
+    <label for="locality">Locality/Town: </label>
+    <input name="locality" id="locality" type="text">
+</p>
+    <p>
+    <label for="city">City/District: </label>
+    <input name="city" id="city" type="text">
+</p>
+
+    <label for="state">State: </label>
+    <input name="state" id="state" type="text">
+<p>
+
+<input id="make_def" name="make_def" type="checkbox">
+    <label for="make_def">Make this default address</label>
+    </p>
+<button>Submit</button>
+</form>
+{% endblock %}

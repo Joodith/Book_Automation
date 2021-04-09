@@ -1,0 +1,22 @@
+{% extends 'Employee/emp_home.html' %}
+{% load crispy_forms_tags %}
+{% load bootstrap3 %}
+{% load static %}
+{% block body_block %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+      <div class="card card-signin my-5">
+        <div class="card-body">
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    <input type="submit" class="btn btn-primary">
+</form>
+             </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

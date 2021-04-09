@@ -1,0 +1,47 @@
+{% extends 'Customer/customer_home.html' %}
+{% load static %}
+{% block form_block %}
+{% endblock %}
+<link rel="stylesheet" href="{% static 'css/Customer.css' %}">
+{% block body_block %}
+  <div class="row">
+      <div class="col" style="margin-left:50px">
+<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfHb5N_MUJ22fWw9C_1n6yO9P_kwiyTDOclyunGoBRu49tnB7vjyffM8-X77GOwygNCLs&usqp=CAU" style="width:180px;height:180px;margin-left:300px">
+      </div>
+ <div class="col-md-4">
+<img src="https://thumbs.dreamstime.com/b/checkmark-symbol-print-green-icon-flat-style-vector-flat-eps-checkmark-symbol-print-green-icon-flat-style-171375749.jpg" style="width:120px;height:120px;margin-left:400px">
+</div>
+    <div class="col-md-1">
+     <h2 style="color:green">Completed Transactions</h2>
+        </div>
+</div>
+
+
+
+    {% for bill in all_bills %}
+<div style="margin-left:450px;width:500px;height:150px" class="bg-info">
+    <div style="margin-left:80px"><strong>Date: </strong>{{bill.date}}</div>
+<table id="table" style="margin-left:80px;margin-top:20px">
+        <tr>
+            <th>Title</th>
+            <th >Quantity</th>
+            <th>Price</th>
+        </tr>
+{% for item in bill.products_list.all %}
+<tr>
+    <td>{{item.product.title}}</td>
+    <td  id="table_data{{item.product.pk}}" align="center">{{item.quantity}}</td>
+    <td id="table_data_price{{item.product.pk}}">{% widthratio item.product.price 1 item.quantity %}</td>
+</tr>
+
+{% endfor %}
+<tr>
+    <td style="font-size:20px;border:1px" align="center" id="total_sum">TOTAL: Rs.{{bill.bill_amount}}</td>
+</tr>
+        </table>
+
+    </div>
+<br>
+{% endfor %}
+
+{% endblock %}

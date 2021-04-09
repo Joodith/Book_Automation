@@ -1,0 +1,124 @@
+{% extends 'Customer/customer_home.html' %}
+{% load crispy_forms_tags %}
+{% load bootstrap3 %}
+{% load static %}
+{% block body_block %}
+
+
+{% for j in list %}
+
+    <div class="card" style="width:500px;margin-left:500px;border:1px solid;height:450px">
+
+    <a href="{{ j.book_pic.url }}">
+                  <img
+                    src="{{ j.book_pic.url }}"
+                    class="rounded-circle"
+                    width="180px"
+                    height="200px"
+                    style="margin-top:20px;margin-left:80px"
+                  />
+                </a>
+    <div class="card-body">
+      <h4 class="card-title" style="font-size:30px">{{j.title}}</h4>
+     <p class="card-text" style="font-size:20px"><strong>{{j.author}}</strong></p>
+     <p class="card-text">
+      <strong>Publications: </strong>{{j.publications}}
+      <br>
+      <strong>Edition: </strong>{{j.edition}}
+      <br>
+      <strong>Price: </strong>Rs.{{j.price}}
+         <br>
+
+     </p>
+    </div>
+
+    <input id="get_user" value={{cur_user}} type="hidden">
+    <div class="card-footer">
+        <div class="row" style="margin-left:50px">
+
+
+        {% if j.pk in context.wish_list %}
+            <div class="col-md-4">
+                <button id="wishlisted"  style="width:150px;font-size:15px" class="btn btn-primary btn-lg">
+                Wishlisted</button>
+            </div>
+
+            <div class="col-md-2">
+                 <button  onclick="deleteWish({{j.product.pk}})" style="width:200px;font-size:15px" class="btn btn-primary btn-lg">
+                  Move to cart</button>
+            </div>
+        {% elif j.pk in context.cart_list %}
+
+                 <button id="cart_add"  style="width:150px;font-size:15px" class="btn btn-primary btn-lg">
+                  Added to cart</button>
+
+
+        {% else %}
+            <div class="col-md-4">
+                  <button id="wish{{cur_user}}{{j.pk}}" onclick="add_item({{j.pk}})" style="width:150px;font-size:15px" class="btn btn-primary btn-lg">
+                  Add to wishlist</button>
+            </div>
+            <div class="col-md-2">
+                  <button  onclick="deleteWish({{j.product.pk}})" style="width:200px;font-size:15px" class="btn btn-primary btn-lg">
+                  Move to cart</button>
+            </div>
+        {% endif %}
+            </div>
+
+
+
+        </div>
+    </div>
+
+<br>
+<br>
+
+ {% endfor %}
+<script>
+ function deleteWish(pk_val){
+    var div_elem=$("#card"+pk_val);
+    var diag=$("#show_up");
+    $.ajax({
+        type:'GET',
+        url:"{% url 'Customer:delete_wishlist' %}",
+        data:{
+        pk:pk_val,
+        job:"move_cart",
+        },
+        success:function(data){
+        div_elem.html("");
+        diag.show();
+        }
+        });
+    }
+
+if ( window.history.replaceState ) {
+  window.history.replaceState( null, null, window.location.href );
+}
+function add_item(pk_val){
+  var user=$("#get_user").val();
+  var btn=$("#wish"+user+pk_val);
+  var wishl=$("#wishlisted");
+  var div_elem=$("#card-footer");
+  console.log(btn.val());
+  if(btn.val()==="Wishlisted"){
+  return false;
+  }
+  $.ajax({
+        type:'GET',
+        url:"{% url 'Customer:add_wishlist' %}",
+        data:{
+        pk:pk_val,
+        },
+        success:function(data){
+        if(!data.prod_exist){
+        btn.html("Wishlisted");
+        }
+
+        }
+        });
+
+}
+
+</script>
+{% endblock %}
