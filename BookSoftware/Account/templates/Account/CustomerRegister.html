@@ -1,24 +1,37 @@
 {% extends 'basepage.html' %}
 {% load bootstrap3 %}
 {% load crispy_forms_tags %}
+{% load static %}
 {% block body_block %}
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600' rel='stylesheet' type='text/css'>
+<link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/Account.css' %}">
+<div class="bg">
+<div class="testbox" >
+  <h1>Registration</h1>
 <div class="container">
   <div class="row">
-    <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
-      <div class="card card-signin my-5">
+
+      <div class="card card-signin my-5 "  >
         <div class="card-body">
           <h5 class="card-title text-center"><b>Sign In</b></h5>
-<form method="POST">
-    {% csrf_token %}
+  <form method="POST">
+
+  {% csrf_token %}
+    <div style="opacity:1">
     {% bootstrap_form cust_form %}
     {% bootstrap_form user_form %}
-    <input type="submit" value="Register">
+      </div>
 
-</form>
-            </div>
+   <p>By clicking Register, you agree on our <a href="#">terms and condition</a>.</p>
+    <input type="submit" value="Register">
+  </form>
+          </div>
       </div>
     </div>
   </div>
 </div>
+</div>
+
 
 {% endblock %}

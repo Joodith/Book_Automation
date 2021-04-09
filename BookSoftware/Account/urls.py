@@ -9,5 +9,6 @@ urlpatterns=[
     url(r'^login/$',views.LoginView,name="login"),
     url(r'^reset_start/$',views.ResetProcessStartView,name="start_reset"),
     url(r'^reset_password/(?P<user>[-\w]+)/$',views.ResetPasswordView,name="password_reset"),
+    url(r'^logout/$',views.user_logout,name="logout"),
 
 ]

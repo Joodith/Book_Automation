@@ -1,16 +1,30 @@
 {% extends 'basepage.html' %}
 {% load bootstrap3 %}
+{% load static %}
 {% load crispy_forms_tags %}
 {% block body_block %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
 <div class="container">
-  <div class="row">
-    <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
-      <div class="card card-signin my-5">
-        <div class="card-body">
-          <h5 class="card-title text-center"><b>Sign In</b></h5>
-          <form class="form-signin" method="POST">
+	<div class="d-flex justify-content-center h-100">
+		<div class="card">
+			<div class="card-header">
+				<h3>LOGIN</h3>
+				<div class="d-flex justify-content-end social_icon">
+					<span><i class="fab fa-facebook-square"></i></span>
+					<span><i class="fab fa-google-plus-square"></i></span>
+					<span><i class="fab fa-twitter-square"></i></span>
+				</div>
+			</div>
+			<div class="card-body">
+				<form class="form-signin" method="POST">
                       {% csrf_token %}
-                      {% bootstrap_form login_form %}
+<p><label for="username" style="color:white">Username/Email</label>
+					<span>{{ login_form.username }}</span>
+	</p>
+					<p><label for="password"  style="color:white">Password</label>
+						<span style="margin-left:50px">{{ login_form.password }}</span>
+					</p>
+
               {% for message in messages %}
 
                     <div class="alert alert-warning">
@@ -22,19 +36,23 @@
             {% endfor %}
 
 
-<p class="list-group-item-text"><input type="submit" class="btn btn-primary" value="Login"></p>
-
-              <a
-                class="btn btn-lg btn-warning btn-block text-uppercase"
-                href="{% url 'Account:start_reset' %}"
-                >Forgot Password?
-              </a>
+<p class="list-group-item-text"><input type="submit" class="btn btn-warning" value="Login"></p>
 
           </form>
-        </div>
-      </div>
-    </div>
-  </div>
+			</div>
+			<p></p>
+			<p></p>
+			<div class="card-footer">
+				<div class="d-flex justify-content-center links">
+					Don't have an account?<a href="{% url 'Account:customer_register' %}">Sign Up</a>
+				</div>
+				<div class="d-flex justify-content-center">
+					<a href="{% url 'Account:start_reset' %}">Forgot your password?</a>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
+
 
 {% endblock %}

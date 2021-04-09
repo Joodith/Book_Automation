@@ -20,11 +20,25 @@ class CustomerRegisterForm(forms.ModelForm):
         'exceed_length':'Phone number invalid',
         'email_exist':'Email already taken'
     }
-    phone_no = forms.CharField(widget=forms.NumberInput, required=True,help_text="10 digit mobile number")
-    email = forms.CharField(widget=forms.EmailInput, required=False,help_text="Not mandatory")
+    phone_no = forms.CharField(widget=forms.NumberInput(
+        attrs={
+            'style':'width:200px;height:40px',
+            'id':'number',
+
+        }
+    ), required=True,help_text="10 digit mobile number",)
+    email = forms.CharField(widget=forms.EmailInput(
+        attrs={
+            'style': 'width:200px;height:40px',
+
+        }
+    ), required=False,help_text="Not mandatory")
     class Meta:
         model=models.Customer
         fields=('fullname',)
+    def __init__(self,*args, **kwargs):
+        super().__init__(*args, **kwargs)
+
     def clean_email(self):
         if self.cleaned_data.get('email'):
             email=self.cleaned_data.get('email')
@@ -81,21 +95,42 @@ class EmployeeRegisterForm(forms.ModelForm):
 
 class LoginForm(forms.Form):
     username=forms.CharField(required=True)
-    password=forms.CharField(widget=forms.PasswordInput,required=True)
+    password=forms.CharField(widget=forms.PasswordInput(),required=True)
 
 class ResetPasswordUserForm(forms.Form):
-    username = forms.CharField(required=True)
+    error_messages={
+        'mismatch':'Passwords do not match'
+    }
+    username = forms.CharField(widget=forms.TextInput(
+        attrs={
+            'style':'height:39px;width:300px',
+            'placeholder':'Username/email'
+        }
+    ),required=True,error_messages={'invalid':"Invalid username or email"})
 
 class ResetPasswordForm(forms.Form):
-    password1= forms.CharField(widget=forms.PasswordInput,label="Password", required=True)
-    password2= forms.CharField(widget=forms.PasswordInput,label="Confirm password", required=True)
+    error_messages = {
+        'mismatch': 'Passwords do not match'
+    }
+    password1= forms.CharField(widget=forms.PasswordInput(
+        attrs={
+            'style': 'height:39px;width:300px',
+            'placeholder': 'Password'
+        }
+    ), required=True)
+    password2= forms.CharField(widget=forms.PasswordInput(
+        attrs={
+            'style': 'height:39px;width:300px',
+            'placeholder':'Confirm Password'
+        }
+    ), required=True)
 
     def clean_password2(self):
         # Check that the two password entries match
         password1 = self.cleaned_data.get("password1")
         password2 = self.cleaned_data.get("password2")
         if password1 and password2 and password1 != password2:
-            raise forms.ValidationError("Passwords don't match")
+            raise forms.ValidationError(self.error_messages['mismatch'],code='mismatch')
         return password2
 
 

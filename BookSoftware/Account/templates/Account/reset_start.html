@@ -1,13 +1,59 @@
 {% extends 'basepage.html' %}
 {% load bootstrap3 %}
+{% load static %}
 {% load crispy_forms_tags %}
 {% block body_block %}
+
+
+    <div class="container">
+    <div class="row">
+        <div>
+            <div class="card" style="margin-left:400px;width:400px;height:500px">
+                <div class="card-header">
+                <p> <span class="glyphicon glyphicon-lock" style="font-size:200px;margin-left:75px"></span></p>
+                    <h1>FORGOT PASSWORD?</h1>
+
+                    </div>
+                <div class="card-body">
+                <span>
+
+
+                </span>
+
+
 <form method="POST">
     {% csrf_token %}
-    {% bootstrap_form form %}
+    {% for message in messages %}
 
-    <input type="submit" value="NEXT">
+                    <div class="alert alert-danger">
+                        <a class="close" href="{% url 'Account:start_reset' %}" data-dismiss="alert">×</a>
 
-</form>
+                        {{ message }}
+
+                    </div>
+            {% endfor %}
+
+    <div class="input-group" style="margin-top:30px">
+      <span class="input-group-addon" style="height:22px"><i class="glyphicon glyphicon-user"></i></span>
+     <div class="fieldWrapper">
+
+
+    {{ form.username }}
+</div>
+
+    </div>
+    <p></p>
+    <div class="card-footer">
+    <input class="btn btn-primary" style="width:350px" type="submit" value="NEXT">
+        </div>
+
+    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+        </div>
+
 
 {% endblock %}

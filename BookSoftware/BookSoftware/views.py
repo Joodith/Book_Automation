@@ -1,5 +1,8 @@
 from django import views
 from django.views.generic import TemplateView
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 
-class HomeView(TemplateView):
-    template_name="basepage.html"
+
+def HomeView(request):
+    return HttpResponseRedirect(reverse('Account:login'))

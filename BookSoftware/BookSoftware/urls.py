@@ -16,10 +16,19 @@ Including another URLconf
 from django.contrib import admin
 from django.conf.urls import url
 from django.urls import include
+from django.contrib.auth import settings
+from django.conf.urls.static import static
 from BookSoftware import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^home/$',views.HomeView.as_view(),name="home"),
+    url(r'^$',views.HomeView,name="home"),
     url(r'^account/',include('Account.urls',namespace='Account')),
+    url(r'^employee/',include('Employee.urls',namespace='Employee')),
+    url(r'^customer/',include('Customer.urls',namespace='Customer')),
+    url(r'^manager/',include('Manager.urls',namespace='Manager')),
+
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)

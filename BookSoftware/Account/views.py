@@ -1,7 +1,10 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect,HttpResponse
+from django.urls import reverse
+from django.views import generic
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.contrib.auth import login
+from django.contrib.auth import login,logout
 from Account import models
 from Account import forms
 from Account.backends import EmailOrUsernameModelBackend
@@ -21,7 +24,7 @@ def CustomerRegisterView(request):
             prof=cust_form.save(commit=False)
             prof.cust_user=user
             prof.save()
-            return HttpResponse("Registered")
+            return HttpResponseRedirect(reverse('Account:login'))
         else:
             messages.add_message(request,messages.ERROR,"Invalid form data")
             return render(request,"Account/CustomerRegister.html",{'user_form':user_form,'cust_form':cust_form})
@@ -35,7 +38,7 @@ def ManagerRegisterView(request):
     if request.method=="POST":
         user_form=forms.UserRegisterForm(data=request.POST)
         manager_form=forms.EmployeeRegisterForm(data=request.POST)
-        if user_form.is_valid and manager_form.is_valid():
+        if user_form.is_valid() and manager_form.is_valid():
             user=user_form.save(commit=False)
             user.status="Manager"
             user.email=manager_form.cleaned_data['email']
@@ -48,7 +51,7 @@ def ManagerRegisterView(request):
                 return render(request,"Account/EmployeesRegister.html",{'user_form':user_form,'manager_form':manager_form})
             manager.emp_user=user
             manager.save()
-            return HttpResponse("Manager Registered!")
+            return HttpResponseRedirect(reverse('Account:login'))
         else:
             messages.add_message(request, messages.ERROR, "Invalid Manager ID")
             return render(request,"Account/EmployeesRegister.html",{'user_form':user_form,'manager_form':manager_form})
@@ -64,7 +67,7 @@ def EmployeeRegisterView(request):
     if request.method=="POST":
         user_form=forms.UserRegisterForm(data=request.POST)
         employee_form=forms.EmployeeRegisterForm(data=request.POST)
-        if user_form.is_valid and employee_form.is_valid():
+        if user_form.is_valid() and employee_form.is_valid():
             user=user_form.save(commit=False)
             user.status="Employee"
             user.email=employee_form.cleaned_data['email']
@@ -73,11 +76,11 @@ def EmployeeRegisterView(request):
             try:
                 check=models.EmployeeID.objects.get(id_val=employee.employee_id);
             except check.DoesNotExist:
-                messages.add_message(request,messages.ERROR,"Invalid Manager ID")
+                messages.add_message(request,messages.ERROR,"Invalid Employee ID")
                 return render(request,"Account/EmployeesRegister.html",{'user_form':user_form,'manager_form':employee_form})
             employee.emp_user=user
             employee.save()
-            return HttpResponse("Employee Registered!")
+            return HttpResponseRedirect(reverse('Account:login'))
         else:
             messages.add_message(request, messages.ERROR, "Invalid Employee ID")
             return render(request,"Account/EmployeesRegister.html",{'user_form':user_form,'manager_form':employee_form})
@@ -97,7 +100,12 @@ def LoginView(request):
             if user:
                 user.backend = 'Account.backends.EmailOrUsernameModelBackend'
                 login(request,user)
-                return HttpResponse("Logged in!")
+                if user.status=="Employee":
+                    return HttpResponseRedirect(reverse('Employee:emp_home'))
+                elif user.status=="Customer":
+                    return HttpResponseRedirect(reverse('Customer:customer_home'))
+                else:
+                    return HttpResponseRedirect(reverse('Manager:home_manager'))
             else:
                 messages.add_message(request, messages.ERROR, 'Username or password is invalid')
                 return render(request, "Account/login.html", {'login_form': login_form})
@@ -118,33 +126,40 @@ def ResetProcessStartView(request):
             user = auth_login.authenticate_only_username(username=username)
             if user:
                 user.backend='Account.backends.EmailOrUsernameModelBackend'
-                kwargs={'user':user}
-                request.method="GET"
-                return ResetPasswordView(request,**kwargs)
+                return HttpResponseRedirect(reverse('Account:password_reset',kwargs={'user':username}))
             else:
-                messages.add_message(request, messages.ERROR, 'User does not exist')
+                messages.error(request,'User does not exist')
                 return render(request, "Account/reset_start.html", {'form':form})
         else:
-            messages.add_message(request, messages.ERROR, 'Invalid form data')
+            messages.error(request, 'Invalid form data')
             return render(request, "Account/reset_start.html", {'form': form})
     else:
         form = forms.ResetPasswordUserForm()
         return render(request, "Account/reset_start.html", {'form': form})
 
-def ResetPasswordView(request,**kwargs):
+def ResetPasswordView(request,user):
     if request.method=="POST":
         form=forms.ResetPasswordForm(data=request.POST)
         password=request.POST.get('password2')
+        username = user
+        auth_login = EmailOrUsernameModelBackend()
+        user_auth = auth_login.authenticate_only_username(username=username)
         if form.is_valid():
-            username=kwargs.get('user')
-            auth_login = EmailOrUsernameModelBackend()
-            user = auth_login.authenticate_only_username(username=username)
-            user.set_password(password)
-            user.save()
-            return HttpResponse("Password reset done!")
+            user_auth.set_password(password)
+            user_auth.save()
+            return HttpResponseRedirect(reverse('Account:login'))
+        else:
+            messages.error(request,"Passwords do not match")
+            return render(request, "Account/reset_password.html", {'form': form})
     else:
         form = forms.ResetPasswordForm()
-        return render(request, "Account/reset_password.html", {'form': form,'cur_user':kwargs.get('user')})
+        return render(request, "Account/reset_password.html", {'form': form})
+
+@login_required
+def user_logout(request):
+    logout(request)
+    return HttpResponseRedirect(reverse('Account:login'))
+
 
 
 
